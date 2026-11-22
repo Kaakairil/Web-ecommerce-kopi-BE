@@ -1,0 +1,11 @@
+-- 0001: indexes on FKs and hot lookup columns
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
+CREATE INDEX IF NOT EXISTS idx_stocks_product_id ON stocks (product_id);
+CREATE INDEX IF NOT EXISTS idx_cart_items_cart_id ON cart_items (cart_id);
+CREATE INDEX IF NOT EXISTS idx_cart_items_product_id ON cart_items (product_id);
+CREATE INDEX IF NOT EXISTS idx_carts_user_id ON carts (user_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON transactions (user_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON transactions (created_at);
+CREATE INDEX IF NOT EXISTS idx_transaction_items_transaction_id ON transaction_items (transaction_id);
+CREATE INDEX IF NOT EXISTS idx_transaction_items_product_id ON transaction_items (product_id);
