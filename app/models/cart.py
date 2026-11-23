@@ -76,3 +76,14 @@ class CartItem:
     def delete_by_cart_id(cart_id):
         response = db.table(CartItem.table_name).delete().eq('cart_id', cart_id).execute()
         return response.data
+
+    @staticmethod
+    def upsert(cart_id, product_id, quantity):
+        """Add or increment quantity (unique constraint per cart+product)."""
+        existing = CartItem.get_by_cart_and_product(cart_id, product_id)
+        if existing:
+            new_qty = existing["quantity"] + int(quantity)
+            return CartItem.update(existing["id"], {"quantity": new_qty})
+        return CartItem.create(
+            {"cart_id": cart_id, "product_id": product_id, "quantity": int(quantity)}
+        )
