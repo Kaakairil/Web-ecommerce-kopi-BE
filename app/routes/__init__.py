@@ -2,10 +2,12 @@
 from flask import Blueprint
 
 from app.routes.auth import bp as auth_bp
+from app.routes.products import bp as products_bp
 from app.routes.system import bp as system_bp
 
 bp = Blueprint("api", __name__)
 bp.register_blueprint(auth_bp)
+bp.register_blueprint(products_bp)
 bp.register_blueprint(system_bp)
 
 
