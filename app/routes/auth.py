@@ -2,6 +2,7 @@
 from flask import Blueprint, request
 
 from app.middleware import auth as auth_mod
+from app.middleware.rate_limit import limit
 from app.models.user import User
 from app.utils import responses
 
@@ -11,6 +12,7 @@ MIN_PASSWORD_LEN = 8
 
 
 @bp.route("/register", methods=["POST"])
+@limit("auth")
 def register():
     data = request.get_json(silent=True) or {}
     username = (data.get("username") or "").strip()
@@ -37,6 +39,7 @@ def register():
 
 
 @bp.route("/login", methods=["POST"])
+@limit("auth")
 def login():
     data = request.get_json(silent=True) or {}
     password = data.get("password") or ""
@@ -72,6 +75,7 @@ def login():
 
 
 @bp.route("/refresh", methods=["POST"])
+@limit("auth")
 def refresh():
     data = request.get_json(silent=True) or {}
     presented = data.get("refresh_token")
