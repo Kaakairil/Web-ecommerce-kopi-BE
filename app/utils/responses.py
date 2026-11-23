@@ -46,3 +46,14 @@ def too_many(message: str = "Too many requests", retry_after: int = 60, data=Non
 
 def server_error(message: str = "Internal server error", data=None):
     return _envelope("error", message, data, 500)
+
+
+def not_modified():
+    """304 response with empty body (ETag revalidation)."""
+    import flask
+
+    resp = flask.make_response("", 304)
+    request_id = flask.g.get("request_id")
+    if request_id:
+        resp.headers["X-Request-ID"] = request_id
+    return resp
