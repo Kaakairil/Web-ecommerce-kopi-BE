@@ -78,3 +78,16 @@ class Product:
     def count_available():
         response = db.table(Product.table_name).select("id", count='exact').eq('is_available', True).execute()
         return response.count if hasattr(response, 'count') else 0
+
+    @staticmethod
+    def get_by_ids(ids):
+        """Batch fetch: one query for a list of ids (N+1 fix)."""
+        if not ids:
+            return []
+        response = (
+            db.table(Product.table_name)
+            .select("*")
+            .in_("id", list(ids))
+            .execute()
+        )
+        return response.data if response.data else []
