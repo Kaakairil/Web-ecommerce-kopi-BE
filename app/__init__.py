@@ -34,6 +34,19 @@ def create_app() -> Flask:
     app.register_blueprint(bp, url_prefix="/api/v1")
     register_observability(app)
 
+    # Event outbox worker: only in prod (not when FLASK_DEBUG/testing),
+    # and only when a webhook target is configured.
+    if (
+        os.environ.get("WEBHOOK_URL")
+        and not app.config.get("TESTING")
+        and os.environ.get("FLASK_DEBUG") != "1"
+        and not app.debug
+    ):
+        from app.services.event_worker import start_worker_thread
+
+        from app.supabase_client import db as supa_db
+        start_worker_thread(supa_db)
+
     @app.after_request
     def add_security_headers(resp):
         from flask import g
