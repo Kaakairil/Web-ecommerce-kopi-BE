@@ -28,16 +28,11 @@ def create_app() -> Flask:
     if CORS:
         CORS(app, resources={r"/api/*": {"origins": app.config["FE_ORIGINS"]}})
 
+    from app.access_log import register_observability
     from app.routes import bp
 
     app.register_blueprint(bp, url_prefix="/api/v1")
-
-    @app.before_request
-    def assign_request_id():
-        from flask import g
-        import uuid
-
-        g.request_id = request.headers.get("X-Request-ID") or str(uuid.uuid4())
+    register_observability(app)
 
     @app.after_request
     def add_security_headers(resp):
